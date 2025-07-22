@@ -1,15 +1,15 @@
-from cffi import FFI
-
-ffi = FFI()
-
-# Declaração da função em C
-ffi.cdef("""
-    void descreve_jogador(const char* nome);
-""")
+import ctypes
+import os
+import sys
 
 # Carrega a biblioteca dinâmica
-lib = ffi.dlopen("./libjogador.dylib")
+lib_path = os.path.join("..", "c_code", "libjogador.dylib")
+lib = ctypes.CDLL(lib_path)
 
-# Chama a função com um nome de jogador do Fortaleza
+# Configura a função descreve_jogador
+lib.descreve_jogador.argtypes = [ctypes.c_char_p]
+lib.descreve_jogador.restype = None
+
 nome = "Lucero"
-lib.descreve_jogador(nome.encode("utf-8"))
+nome_bytes = nome.encode('utf-8')
+lib.descreve_jogador(nome_bytes)
